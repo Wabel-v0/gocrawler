@@ -5,6 +5,7 @@ import (
 )
 
 func TestNormalizeUrl(t *testing.T) {
+	// I need to write more tests here
 	tests := []struct {
 		name     string
 		inputURL string
