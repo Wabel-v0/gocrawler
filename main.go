@@ -26,6 +26,7 @@ func getHtml(rawUrl string) (string, error) {
 }
 
 func main() {
+
 	args := os.Args[1:]
 	if len(args) < 1 {
 		fmt.Println("no website provided")
@@ -38,11 +39,13 @@ func main() {
 	} else if len(args) == 1 {
 		fmt.Printf("starting crawl of: %v\n", args[0])
 	}
-	res, err := getHtml(args[0])
-	if err != nil {
-		log.Fatal(err)
 
-	}
-	fmt.Println(res)
+	crawlPage(args[0], args[0], make(map[string]int))
+	// res, err := getHtml(args[0])
+	// if err != nil {
+	// 	log.Fatal(err)
+
+	// }
+	// fmt.Println(res)
 
 }
