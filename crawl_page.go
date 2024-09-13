@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/url"
 )
@@ -39,7 +38,7 @@ func (cfg *config) crawlPage(rawCurrentUrl string) {
 	for _, u := range urls {
 		cfg.wg.Add(1)
 		go cfg.crawlPage(u)
-		fmt.Printf("crawling %s\n", u)
+
 	}
 
 }
