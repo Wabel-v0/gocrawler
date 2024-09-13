@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -12,14 +13,28 @@ func main() {
 		fmt.Println("no website provided")
 		os.Exit(1)
 
-	} else if len(args) > 1 {
+	} else if len(args) > 3 {
 		fmt.Println("too many arguments provided")
 		os.Exit(1)
 
-	} else if len(args) == 1 {
+	} else if len(args) == 3 {
 		fmt.Printf("starting crawl of: %v\n", args[0])
 	}
-	cfg := configer(args[0], 5)
+	maxConcurrency, err := strconv.Atoi(args[1])
+	if err != nil {
+		fmt.Println("invalid max concurrency")
+		os.Exit(1)
+
+	}
+	maxPages, err := strconv.Atoi(args[2])
+	if err != nil {
+		fmt.Println("invalid max pages")
+		os.Exit(1)
+
+	}
+	rawBaseURL := args[0]
+
+	cfg := configer(rawBaseURL, maxConcurrency, maxPages)
 
 	cfg.wg.Add(1)
 	go cfg.crawlPage(args[0])
@@ -27,5 +42,6 @@ func main() {
 	for url, page := range cfg.pages {
 		fmt.Printf("URL: %s, visits: %d\n", url, page)
 	}
+	fmt.Println(len(cfg.pages))
 
 }
