@@ -2,28 +2,8 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"log"
-	"net/http"
 	"os"
 )
-
-func getHtml(rawUrl string) (string, error) {
-	res, err := http.Get(rawUrl)
-	if err != nil {
-		log.Fatal(err)
-	}
-	body, err := io.ReadAll(res.Body)
-	res.Body.Close()
-	if res.StatusCode > 399 {
-		log.Fatalf("Error: %v", res.StatusCode)
-	}
-	if err != nil {
-		log.Fatal(err)
-
-	}
-	return string(body), nil
-}
 
 func main() {
 
@@ -39,13 +19,13 @@ func main() {
 	} else if len(args) == 1 {
 		fmt.Printf("starting crawl of: %v\n", args[0])
 	}
+	cfg := configer(args[0], 5)
 
-	crawlPage(args[0], args[0], make(map[string]int))
-	// res, err := getHtml(args[0])
-	// if err != nil {
-	// 	log.Fatal(err)
-
-	// }
-	// fmt.Println(res)
+	cfg.wg.Add(1)
+	go cfg.crawlPage(args[0])
+	cfg.wg.Wait()
+	for url, page := range cfg.pages {
+		fmt.Printf("URL: %s, visits: %d\n", url, page)
+	}
 
 }
