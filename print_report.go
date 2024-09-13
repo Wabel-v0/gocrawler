@@ -5,24 +5,37 @@ import (
 	"sort"
 )
 
-type KeyValue struct {
+type Page struct {
 	Key   string
 	Value int
 }
 
 func printReport(pages map[string]int, baseURL string) {
-	var sortedPages []KeyValue
-	for k, v := range pages {
-		sortedPages = append(sortedPages, KeyValue{k, v})
-	}
-	sort.SliceStable(sortedPages, func(i, j int) bool {
-		return sortedPages[i].Value > sortedPages[j].Value
-	})
+	var sorted []Page
+
 	fmt.Println("========================================")
 	fmt.Printf("Crawling report for %s\n", baseURL)
 	fmt.Println("========================================")
-	for _, v := range sortedPages {
+	sorted = sortedPages(pages)
+	for _, v := range sorted {
 		fmt.Printf("Found %v internal links to %v \n", v.Value, v.Key)
 
 	}
+
+}
+
+func sortedPages(pages map[string]int) []Page {
+	pagesSlice := []Page{}
+	for url, num := range pages {
+		pagesSlice = append(pagesSlice, Page{Key: url, Value: num})
+		sort.Slice(pagesSlice, func(i, j int) bool {
+			if pagesSlice[i].Value == pagesSlice[j].Value {
+				return pagesSlice[i].Key > pagesSlice[j].Key
+			}
+			return pagesSlice[i].Value > pagesSlice[j].Value
+
+		})
+	}
+	return pagesSlice
+
 }
